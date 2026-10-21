@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   actionlint:
-    name: 'actionlint'
+    name: 'Lint'
     runs-on: 'ubuntu-latest'
     steps:
       - name: 'Checkout'
