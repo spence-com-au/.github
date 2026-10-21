@@ -8,10 +8,6 @@ permissions: {}
 
 jobs:
   claude:
-    # A pull request from Dependabot or a fork is passed no secrets, so its review would be refused a token and fail.
-    if: >-
-      github.event.pull_request.user.login != 'dependabot[bot]' &&
-      github.event.pull_request.head.repo.full_name == github.repository
     uses: 'spence-com-au/claude-code-action/.github/workflows/claude.yaml@master'
     permissions:
       contents: 'write'
