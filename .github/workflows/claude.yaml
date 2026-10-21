@@ -2,21 +2,16 @@
 name: 'Claude'
 
 on:
-  pull_request:
-    types:
-      - 'opened'
-      - 'reopened'
-      - 'synchronize'
+  pull_request: {}
 
-# No permissions by default.
 permissions: {}
 
 jobs:
   claude:
-    # A Dependabot pull request is passed no secrets, so its review would be refused a token and fail with a notice that
-    # it reached no verdict. `github.event.pull_request` is unset on `issue_comment` and `issues`, so a mention in a
-    # bot's pull request's conversation still runs.
-    if: "github.event.pull_request.user.type != 'Bot'"
+    # A pull request from Dependabot or a fork is passed no secrets, so its review would be refused a token and fail.
+    if: >-
+      github.event.pull_request.user.login != 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository
     uses: 'spence-com-au/claude-code-action/.github/workflows/claude.yaml@master'
     permissions:
       contents: 'write'
