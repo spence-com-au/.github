@@ -1,5 +1,7 @@
 ---
-name: 'Claude'
+# Named apart from the `claude.yaml` each repository calls the same workflow from, so that once the `Workflows` ruleset
+# enforces this, its runs and checks can be told from theirs.
+name: 'Claude Review'
 
 on:
   pull_request: {}
@@ -7,7 +9,7 @@ on:
 permissions: {}
 
 jobs:
-  claude:
+  review:
     uses: 'spence-com-au/claude-code-action/.github/workflows/claude.yaml@master'
     permissions:
       contents: 'write'
