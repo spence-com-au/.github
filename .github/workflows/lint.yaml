@@ -20,3 +20,5 @@ jobs:
 
       - name: 'Lint the workflows'
         uses: 'raven-actions/actionlint@v2'
+        with:
+          version: '1.7.12'
