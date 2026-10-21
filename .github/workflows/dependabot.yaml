@@ -13,8 +13,16 @@ jobs:
     name: 'Automerge'
     if: "github.event.pull_request.user.login == 'dependabot[bot]'"
     runs-on: 'ubuntu-latest'
+    env:
+      GH_TOKEN: '${{ github.token }}'
+      PR_URL: '${{ github.event.pull_request.html_url }}'
     steps:
-      - run: 'gh pr merge --auto --squash "${PR_URL}"'
+      # Fails unless the repository lets GitHub Actions approve pull requests (`can_approve_pull_request_reviews`).
+      - name: 'Approve the pull request'
+        run: 'gh pr review --approve --body "${BODY}" "${PR_URL}"'
         env:
-          GH_TOKEN: '${{ github.token }}'
-          PR_URL: '${{ github.event.pull_request.html_url }}'
+          BODY: >-
+            Approved by the Dependabot workflow rather than by a review: a Dependabot run has no repository secrets,
+            so Claude cannot review it.
+      - name: 'Enable auto-merge'
+        run: 'gh pr merge --auto --squash "${PR_URL}"'
