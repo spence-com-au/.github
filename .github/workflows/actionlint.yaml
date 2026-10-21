@@ -1,5 +1,5 @@
 ---
-name: 'actionlint'
+name: 'Actionlint'
 
 on:
   pull_request: {}
