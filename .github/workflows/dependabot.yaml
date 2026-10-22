@@ -11,15 +11,16 @@ permissions:
 jobs:
   automerge:
     name: 'Automerge'
+    runs-on: 'ubuntu-latest'
 
     # This approves the pull request, so it tests who triggered the run rather than who opened it: a person who pushes
     # to a Dependabot branch would otherwise have their commit approved for them.
     if: "github.actor == 'dependabot[bot]'"
 
-    runs-on: 'ubuntu-latest'
     env:
       GH_TOKEN: '${{ github.token }}'
       PR_URL: '${{ github.event.pull_request.html_url }}'
+
     steps:
       # Fails unless the repository lets GitHub Actions approve pull requests (`can_approve_pull_request_reviews`).
       - name: 'Approve the pull request'
