@@ -1,6 +1,4 @@
 ---
-# Named apart from each repository's own caller of the same workflow, `claude.yaml` in most, so that once the
-# `Workflows` ruleset enforces this, its runs and checks can be told from theirs.
 name: 'Claude Review'
 run-name: 'Reviewing #${{ github.event.pull_request.number }} by @${{ github.event.pull_request.user.login }}'
 
@@ -13,9 +11,8 @@ jobs:
   review:
     uses: 'spence-com-au/claude-code-action/.github/workflows/claude.yaml@master'
     permissions:
-      contents: 'write'
+      contents: 'read'
       id-token: 'write'
-      issues: 'write'
       pull-requests: 'write'
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN: '${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}'
