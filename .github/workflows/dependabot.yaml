@@ -18,13 +18,16 @@ jobs:
     # `github.actor`, so `github.triggering_actor` is what stops a person re-running an earlier Dependabot run.
     if: "github.actor == 'dependabot[bot]' && github.triggering_actor == 'dependabot[bot]'"
 
+    # Both steps act on the commit that triggered the run, not on whatever the head is by the time they execute.
     env:
       GH_TOKEN: '${{ github.token }}'
+      HEAD_SHA: '${{ github.event.pull_request.head.sha }}'
       PR_URL: '${{ github.event.pull_request.html_url }}'
 
     steps:
-      # Fails unless the repository lets GitHub Actions approve pull requests (`can_approve_pull_request_reviews`). The
-      # review is pinned to the commit that triggered the run, so it does not count for a commit pushed after it.
+      # Fails unless the repository lets GitHub Actions approve pull requests (`can_approve_pull_request_reviews`). A
+      # review on an older commit still counts toward required approvals, so pinning this one stops it covering a later
+      # push only together with the `Require pull request` ruleset's `dismiss_stale_reviews_on_push`.
       - name: 'Approve the pull request'
         run: >-
           gh api --method POST "repos/${REPO}/pulls/${PR_NUMBER}/reviews"
@@ -32,10 +35,10 @@ jobs:
         env:
           REPO: '${{ github.repository }}'
           PR_NUMBER: '${{ github.event.pull_request.number }}'
-          HEAD_SHA: '${{ github.event.pull_request.head.sha }}'
           BODY: >-
             Approved by the Dependabot workflow rather than by a review: a Dependabot run has no repository secrets, so
             Claude cannot review it.
 
+      # Pinned too, so a commit pushed between the run being queued and approving is never merged on its approval.
       - name: 'Enable auto-merge'
-        run: 'gh pr merge --auto --squash "${PR_URL}"'
+        run: 'gh pr merge --auto --squash --match-head-commit "${HEAD_SHA}" "${PR_URL}"'
