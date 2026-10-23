@@ -20,8 +20,12 @@ jobs:
 
     # Both steps act on the commit that triggered the run, not on whatever the head is by the time they execute.
     env:
+      BODY: >-
+        Approved by the Dependabot workflow rather than by a review: a Dependabot run has no repository secrets, so
+        Claude cannot review it.
       GH_TOKEN: '${{ github.token }}'
       HEAD_SHA: '${{ github.event.pull_request.head.sha }}'
+      PR_NUMBER: '${{ github.event.pull_request.number }}'
       PR_URL: '${{ github.event.pull_request.html_url }}'
 
     steps:
@@ -30,14 +34,8 @@ jobs:
       # push only together with the `Require pull request` ruleset's `dismiss_stale_reviews_on_push`.
       - name: 'Approve the pull request'
         run: >-
-          gh api --method POST "repos/${REPO}/pulls/${PR_NUMBER}/reviews"
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/reviews"
           -f event=APPROVE -f commit_id="${HEAD_SHA}" -f body="${BODY}"
-        env:
-          REPO: '${{ github.repository }}'
-          PR_NUMBER: '${{ github.event.pull_request.number }}'
-          BODY: >-
-            Approved by the Dependabot workflow rather than by a review: a Dependabot run has no repository secrets, so
-            Claude cannot review it.
 
       # Pinned too, so a commit pushed between the run being queued and approving is never merged on its approval.
       - name: 'Enable auto-merge'
