@@ -17,5 +17,8 @@ jobs:
       - name: 'Checkout'
         uses: 'actions/checkout@v7.0.1'
 
+      # The organisation's ruleset requires this of every repository, but actionlint fails when it finds no workflows to
+      # lint, so a repository without any of its own skips it rather than failing.
       - name: 'Lint the workflows'
+        if: "hashFiles('.github/workflows/*.yml', '.github/workflows/*.yaml') != ''"
         uses: 'raven-actions/actionlint@v2.2.0'
