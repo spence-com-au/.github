@@ -1,0 +1,8 @@
+# Read by the [settings app](https://github.com/repository-settings/app) for every repository in the organization that
+# has no `.github/settings.yml` of its own. The app reads only this exact path, so it cannot take the `.yaml` extension
+# the rest of this repository uses.
+---
+repository:
+  allow_squash_merge: true
+  allow_merge_commit: false
+  allow_rebase_merge: false
