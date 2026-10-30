@@ -8,9 +8,9 @@ on:
   pull_request:
     types:
       - 'opened'
+      - 'ready_for_review'
       - 'reopened'
       - 'synchronize'
-      - 'ready_for_review'
 
 permissions: {}
 
