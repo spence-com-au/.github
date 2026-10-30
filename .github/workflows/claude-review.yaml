@@ -3,7 +3,14 @@ name: 'Claude Review'
 run-name: 'Reviewing #${{ github.event.pull_request.number }} by @${{ github.event.pull_request.user.login }}'
 
 on:
-  pull_request: {}
+  # The review skips a draft, and marking it ready fires none of the default types, so `ready_for_review` is what
+  # reviews it.
+  pull_request:
+    types:
+      - 'opened'
+      - 'ready_for_review'
+      - 'reopened'
+      - 'synchronize'
 
 permissions: {}
 
