@@ -1,0 +1,41 @@
+---
+name: 'Blueprint'
+
+on:
+  pull_request: {}
+  push:
+    branches:
+      - 'master'
+
+permissions:
+  contents: 'read'
+
+jobs:
+  gitignore:
+    name: 'Gitignore'
+    runs-on: 'ubuntu-latest'
+    env:
+      GH_TOKEN: '${{ github.token }}'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v7.0.1'
+
+      # A repository may ignore whatever else it likes, so this asks git whether each of the blueprint's patterns is
+      # ignored rather than looking for the line itself: `.claude/` satisfies `/.claude/worktrees/` as well as the line
+      # does. A pattern ending in `/` matches only a directory, so it is tested with a path inside one.
+      - name: 'Check the blueprint is ignored'
+        run: |
+          blueprint="${RUNNER_TEMP}/blueprint.gitignore"
+          gh api repos/spence-com-au/repo-blueprint/contents/.gitignore -H 'Accept: application/vnd.github.raw' > "${blueprint}"
+
+          status=0
+          while IFS= read -r pattern; do
+            [[ -z "${pattern}" || "${pattern}" == '#'* ]] && continue
+            path="${pattern#/}"
+            [[ "${path}" == */ ]] && path+='x'
+            if ! git -c core.excludesFile=/dev/null check-ignore --quiet --no-index "${path}"; then
+              echo "::error file=.gitignore::\`${pattern}\` is not ignored, as the blueprint requires"
+              status=1
+            fi
+          done < "${blueprint}"
+          exit "${status}"
