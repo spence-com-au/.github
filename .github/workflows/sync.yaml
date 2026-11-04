@@ -13,6 +13,12 @@ on:
 permissions:
   contents: 'read'
 
+# Each run force-updates every target's default branch from the commit it checked out, so overlapping runs would leave
+# whichever finished last, older rules or not. Queued runs wait rather than cancel, so none is dropped mid-push.
+concurrency:
+  cancel-in-progress: false
+  group: '${{ github.workflow }}'
+
 jobs:
   claude:
     name: 'Claude Rules'
