@@ -33,17 +33,17 @@ jobs:
       - name: 'Configure the sync'
         env:
           GH_TOKEN: '${{ steps.token.outputs.token }}'
-        run: >-
-          gh repo list "${GITHUB_REPOSITORY_OWNER}"
-            --no-archived
-            --limit 1000
-            --json nameWithOwner
+        run: |
+          gh repo list "${GITHUB_REPOSITORY_OWNER}" \
+            --no-archived \
+            --limit 1000 \
+            --json nameWithOwner \
             --jq '{
               group: {
                 repos: [.[].nameWithOwner | select(. != env.GITHUB_REPOSITORY)],
-                files: [{source: ".claude/rules/", dest: ".claude/rules/", deleteOrphaned: true}]
+                files: [{source: ".claude/rules/", dest: ".claude/rules/org/", deleteOrphaned: true}]
               }
-            }'
+            }' \
             > "${RUNNER_TEMP}/sync.json"
 
       - name: 'Sync'
