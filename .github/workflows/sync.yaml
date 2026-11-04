@@ -14,7 +14,8 @@ permissions:
   contents: 'read'
 
 jobs:
-  sync:
+  claude:
+    name: 'Claude Rules'
     runs-on: 'ubuntu-latest'
     steps:
       - name: 'Mint a token'
@@ -24,25 +25,30 @@ jobs:
           client-id: '${{ vars.REPO_FILE_SYNC_CLIENT_ID }}'
           owner: '${{ github.repository_owner }}'
           permission-contents: 'write'
-          permission-pull-requests: 'write'
           private-key: '${{ secrets.REPO_FILE_SYNC_PRIVATE_KEY }}'
 
       - name: 'Checkout'
         uses: 'actions/checkout@v7.0.1'
 
-      # The action takes no wildcard for its targets, so they are listed from the organization on each run rather than
-      # kept in a file that a new repository would be missing from. Archived repositories are read-only.
       - name: 'Configure the sync'
         env:
           GH_TOKEN: '${{ steps.token.outputs.token }}'
         run: >-
-          gh repo list "${GITHUB_REPOSITORY_OWNER}" --no-archived --limit 1000 --json nameWithOwner
-          --jq '{group: {repos: [.[].nameWithOwner | select(. != env.GITHUB_REPOSITORY)],
-          files: [{source: ".claude/rules/", dest: ".claude/rules/"}]}}'
-          > "${RUNNER_TEMP}/sync.json"
+          gh repo list "${GITHUB_REPOSITORY_OWNER}"
+            --no-archived
+            --limit 1000
+            --json nameWithOwner
+            --jq '{
+              group: {
+                repos: [.[].nameWithOwner | select(. != env.GITHUB_REPOSITORY)],
+                files: [{source: ".claude/rules/", dest: ".claude/rules/", deleteOrphaned: true}]
+              }
+            }'
+            > "${RUNNER_TEMP}/sync.json"
 
       - name: 'Sync'
         uses: 'BetaHuhn/repo-file-sync-action@v1.21.1'
         with:
           CONFIG_PATH: '${{ runner.temp }}/sync.json'
           GH_INSTALLATION_TOKEN: '${{ steps.token.outputs.token }}'
+          SKIP_PR: 'true'
