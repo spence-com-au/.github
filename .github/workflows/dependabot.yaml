@@ -34,8 +34,8 @@ jobs:
       # push only together with the `Require pull request` ruleset's `dismiss_stale_reviews_on_push`.
       - name: 'Approve the pull request'
         run: >-
-          gh api --method POST "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/reviews"
-          -f event=APPROVE -f commit_id="${HEAD_SHA}" -f body="${BODY}"
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/reviews" -f event=APPROVE -f
+          commit_id="${HEAD_SHA}" -f body="${BODY}"
 
       # Pinned too, so a commit pushed between the run being queued and approving is never merged on its approval.
       - name: 'Enable auto-merge'
