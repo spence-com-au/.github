@@ -4,7 +4,6 @@ globs: ['**/*.md']
 noBanner: true
 
 config:
-  extends: 'markdownlint/style/prettier'
   line-length:
     code_blocks: false
     line_length: 120
