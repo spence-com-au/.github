@@ -8,8 +8,6 @@ config:
     style: 'fenced'
   code-fence-style:
     style: 'backtick'
-  emphasis-style:
-    style: 'asterisk'
   heading-style:
     style: 'atx'
   hr-style:
