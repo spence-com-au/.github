@@ -4,7 +4,27 @@ globs: ['**/*.md']
 noBanner: true
 
 config:
+  code-block-style:
+    style: 'fenced'
+  code-fence-style:
+    style: 'backtick'
+  emphasis-style:
+    style: 'asterisk'
+  heading-style:
+    style: 'atx'
+  hr-style:
+    style: '---'
   line-length:
     code_blocks: false
     line_length: 120
+    stern: true
     tables: false
+  strong-style:
+    style: 'asterisk'
+  table-column-style:
+    aligned_delimiter: true
+    style: 'aligned'
+  ol-prefix:
+    style: 'ordered'
+  ul-style:
+    style: 'dash'
