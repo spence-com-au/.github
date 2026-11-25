@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: 'Mint a token'
         id: 'token'
-        uses: 'actions/create-github-app-token@v3.3.0'
+        uses: 'actions/create-github-app-token@v3.4.0'
         with:
           client-id: '${{ vars.REPO_FILE_SYNC_CLIENT_ID }}'
           owner: '${{ github.repository_owner }}'
